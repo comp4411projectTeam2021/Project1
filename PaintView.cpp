@@ -11,6 +11,7 @@
 #include "ImpBrush.h"
 
 
+
 #define LEFT_MOUSE_DOWN		1
 #define LEFT_MOUSE_DRAG		2
 #define LEFT_MOUSE_UP		3
@@ -98,9 +99,9 @@ void PaintView::draw()
 		// Clear it after processing.
 		isAnEvent	= 0;	
 
-		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
-		Point target( coord.x, m_nWindowHeight - coord.y );
-		
+		int brushSize = m_pDoc->getSize();
+		Point source(coord.x + m_nStartCol, m_nEndRow - coord.y );
+		Point target( max(min(drawWidth - brushSize /2 , coord.x), brushSize / 2), m_nWindowHeight - max(brushSize / 2,min(drawHeight - brushSize /2,coord.y)) );
 		// This is the event handler
 		switch (eventToDo) 
 		{

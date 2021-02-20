@@ -82,6 +82,7 @@ void ImpressionistDoc::setBrushType(int type)
 //---------------------------------------------------------
 int ImpressionistDoc::getSize()
 {
+	
 	return m_pUI->getSize();
 }
 
