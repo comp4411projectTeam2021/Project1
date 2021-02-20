@@ -35,6 +35,8 @@ public:
 private:
 	int	m_nWindowWidth, 
 		m_nWindowHeight;
+	
+
 
 };
 
