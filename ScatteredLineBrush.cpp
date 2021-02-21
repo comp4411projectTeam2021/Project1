@@ -1,17 +1,17 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
-#include "linebrush.h"
+#include "ScatteredLineBrush.h"
 #include <iostream>
 extern float frand();
 
-LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) :
+ScatteredLineBrush::ScatteredLineBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
 {
 }
 
-void LineBrush::BrushBegin(const Point source, const Point target)
+void ScatteredLineBrush::BrushBegin(const Point source, const Point target)
 {
-	
+
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 	//if (!(target.x >= 0 && target.x < pDoc->m_nWidth && target.y >= 0 && target.y < pDoc->m_nHeight))return;
@@ -19,9 +19,15 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	int size = pDoc->getSize();
 
 	glBegin(GL_LINES);
-	SetColor(source);
-	glVertex2d(target.x - size / 2, target.y);
-	glVertex2d(target.x + size / 2, target.y);
+	for (int i = 0; i < 4; i++)
+	{
+		int curX = rand() % size;
+		int curY = rand() % (2 * size - 1) % size;
+		Point curP(source.x + curX - size / 2, source.y + curY - size / 2);
+		SetColor(curP);
+		glVertex2d(curP.x - size / 2, curP.y);
+		glVertex2d(curP.x + size / 2, curP.y);
+	}
 	glEnd();
 
 	//glPointSize((float)size);
@@ -29,13 +35,13 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	//BrushMove(source, target);
 }
 
-void LineBrush::BrushMove(const Point source, const Point target)
+void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 {/*
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 	if (pDoc == NULL) {
-		printf("LineBrush::BrushMove  document is NULL\n");
+		printf("ScatteredLineBrush::BrushMove  document is NULL\n");
 		return;
 	}
 
@@ -48,5 +54,5 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	BrushBegin(source, target);
 }
 
-void LineBrush::BrushEnd(const Point source, const Point target){}
+void ScatteredLineBrush::BrushEnd(const Point source, const Point target) {}
 
