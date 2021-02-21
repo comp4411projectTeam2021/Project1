@@ -42,6 +42,7 @@ public:
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucDisplayCopy;
 	unsigned char*	m_ucPainting;
+	unsigned char*  m_ucSwapCache;
 
 
 	// The current active brush.
@@ -57,7 +58,9 @@ public:
 	GLubyte* GetOriginalPixel( int x, int y );
 	GLubyte* GetDisplayImgPixel(int x, int y);
 	// Get the color of the original picture at the specified point	
-	GLubyte* GetOriginalPixel( const Point p );  
+	GLubyte* GetOriginalPixel( const Point p );
+
+	void SwapOriginal();
 
 
 private:

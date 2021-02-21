@@ -27,6 +27,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
 	m_ucDisplayCopy = NULL;
+	m_ucSwapCache = NULL;
 
 
 	// create one instance of each brush
@@ -221,3 +222,16 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 	return GetOriginalPixel( p.x, p.y );
 }
 
+void ImpressionistDoc::SwapOriginal() {
+	if (m_ucBitmap)
+		if (m_ucSwapCache) {
+			delete[] m_ucBitmap;
+			m_ucBitmap = m_ucSwapCache;
+			m_ucSwapCache = NULL;
+		}
+		else {
+			m_ucSwapCache = m_ucBitmap;
+			m_ucBitmap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 3];
+			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
+		}
+}

@@ -52,6 +52,7 @@ public:
 	int					getSize();
 	void				setSize(int size);
 
+
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
 
@@ -75,6 +76,9 @@ private:
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
+	static void cb_swapImage(Fl_Menu_* o, void* v);
+
+
 
 };
 
