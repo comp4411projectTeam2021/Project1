@@ -6,6 +6,7 @@
 
 #include "impressionist.h"
 #include "impressionistDoc.h"
+#include "ImpressionistUI.h"
 #include "originalview.h"
 #include "PaintView.h"
 
@@ -67,8 +68,8 @@ void OriginalView::draw()
 		if (startrow < 0)
 			startrow = 0;
 
-		memcpy(m_pDoc->m_ucDisplayCopy, m_pDoc->m_ucBitmap,  m_pDoc->m_nWidth * m_pDoc->m_nHeight * 3);
-		{//Marker
+
+		{
 			int drawWidth, drawHeight;
 			drawWidth = min(m_nWindowWidth, m_pDoc->m_nPaintWidth);
 			drawHeight = min(m_nWindowHeight, m_pDoc->m_nPaintHeight);
@@ -77,6 +78,20 @@ void OriginalView::draw()
 			GLubyte color[3] = { 255,0,0 };
 			Point mousePoint = PaintView::getCurrentMOusePos();
 			Point* disp = new Point(max(min(drawWidth - brushSize / 2, mousePoint.x), brushSize / 2), m_nWindowHeight - max(brushSize / 2, min(drawHeight - brushSize / 2, mousePoint.y)));
+		//Scale color
+			for (int i = 0; i < drawWidth; i++) {
+				for (int j = 0; j < drawHeight; j++) {
+					GLubyte* beforeColor = m_pDoc->GetFileCopyPixel(i, j);
+					float* scaleFactor = m_pDoc->m_pUI->getRGBScale();
+					GLubyte afterColor[3] = { beforeColor[0]* scaleFactor [0],beforeColor[1] * scaleFactor[1] ,beforeColor[2] * scaleFactor[2] };
+					memcpy(m_pDoc->GetOriginalPixel(i, j), afterColor, 3);
+					
+				}
+			}
+
+		//Marker
+			memcpy(m_pDoc->m_ucDisplayCopy, m_pDoc->m_ucBitmap, m_pDoc->m_nWidth * m_pDoc->m_nHeight * 3);
+
 
 			for (int i = -brushSize / 2; i < brushSize / 2; i++) {
 				for (int j = -brushSize / 2; j < brushSize / 2; j++) {

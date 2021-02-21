@@ -39,6 +39,11 @@ public:
 
 	Fl_Slider*			m_BrushSizeSlider;
 	Fl_Button*          m_ClearCanvasButton;
+// for color adjust
+	Fl_Window* m_RGBScaleDialog;
+	Fl_Slider* m_ColorRSlider;
+	Fl_Slider* m_ColorGSlider;
+	Fl_Slider* m_ColorBSlider;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -50,6 +55,7 @@ public:
 	// Interface to get attribute
 
 	int					getSize();
+	float* getRGBScale();
 	void				setSize(int size);
 
 
@@ -58,6 +64,9 @@ private:
 
 	// All attributes here
 	int		m_nSize;
+	float m_nColorScaleR;
+	float m_nColorScaleG;
+	float m_nColorScaleB;
 
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -77,6 +86,14 @@ private:
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
 	static void cb_swapImage(Fl_Menu_* o, void* v);
+
+	static void cb_RGBscaleWidge(Fl_Menu_* o, void* v);
+
+	static void cb_RSlides(Fl_Widget* o, void* v);
+
+	static void cb_GSlides(Fl_Widget* o, void* v);
+
+	static void cb_BSlides(Fl_Widget* o, void* v);
 
 
 

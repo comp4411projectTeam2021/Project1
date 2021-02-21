@@ -28,6 +28,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucPainting	= NULL;
 	m_ucDisplayCopy = NULL;
 	m_ucSwapCache = NULL;
+	m_ucOriginalCopy = NULL;
 
 
 	// create one instance of each brush
@@ -114,13 +115,16 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// release old storage
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
+	if ( m_ucOriginalCopy ) delete [] m_ucOriginalCopy;
 	if ( m_ucDisplayCopy ) delete [] m_ucDisplayCopy;
 	if ( m_ucPainting ) delete [] m_ucPainting;
 
 	m_ucBitmap		= data;
 
 	m_ucDisplayCopy = new unsigned char[width * height * 3];
+	m_ucOriginalCopy = new unsigned char[width * height * 3];
 	memcpy(m_ucDisplayCopy, m_ucBitmap, width * height * 3);
+	memcpy(m_ucOriginalCopy, m_ucBitmap, width * height * 3);
 
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
@@ -212,6 +216,21 @@ GLubyte* ImpressionistDoc::GetDisplayImgPixel(int x, int y)
 		y = m_nHeight - 1;
 
 	return (GLubyte*)(m_ucDisplayCopy + 3 * (y * m_nWidth + x));
+}
+
+GLubyte* ImpressionistDoc::GetFileCopyPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_ucOriginalCopy + 3 * (y * m_nWidth + x));
 }
 
 //----------------------------------------------------------------

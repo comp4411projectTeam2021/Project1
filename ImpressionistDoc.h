@@ -40,6 +40,7 @@ public:
 					m_nPaintHeight;	
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
+	unsigned char*	m_ucOriginalCopy;
 	unsigned char*	m_ucDisplayCopy;
 	unsigned char*	m_ucPainting;
 	unsigned char*  m_ucSwapCache;
@@ -57,6 +58,7 @@ public:
 	// Get the color of the original picture at the specified coord
 	GLubyte* GetOriginalPixel( int x, int y );
 	GLubyte* GetDisplayImgPixel(int x, int y);
+	GLubyte* GetFileCopyPixel(int x, int y);
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel( const Point p );
 
