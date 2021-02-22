@@ -34,6 +34,8 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucOriginalCopy = NULL;
 	m_ucLastStep = NULL;
 
+	m_ucDissolveImage = NULL;
+
 
 
 	// create one instance of each brush
@@ -159,6 +161,45 @@ int ImpressionistDoc::loadImage(char *iname)
 	return 1;
 }
 
+int ImpressionistDoc::loadDissolveImage(char* iname) {
+	// try to open the image to read
+	unsigned char* data;
+	int				width,
+		height;
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	if (m_ucDissolveImage) delete[] m_ucDissolveImage;
+
+	m_ucDissolveImage = data;
+
+	glPointSize(10.0f);
+
+	GLubyte originalColor[3];
+	GLubyte disolveColor[3];
+	float alpha = m_pUI->getDissolveAlpha();
+	for (int i = 0; i < min(height, m_nPaintHeight); i++) {
+		for (int j = 0; j < min(width, m_nWidth); j++) {
+			/*glBegin(GL_POINTS);*/
+			
+			memcpy(disolveColor, (GLubyte*)(m_ucDissolveImage + 3 * (i * width + j)), 3);
+			memcpy(originalColor,(GLubyte*)(m_ucPainting + 3 * (i * m_nWidth + j)),  3);
+			GLubyte final[3] = { originalColor[0] * (1 - alpha) + disolveColor[0] * alpha, originalColor[1] * (1 - alpha) + disolveColor[1] * alpha, originalColor[2] * (1 - alpha) + disolveColor[2] * alpha, };
+			memcpy((GLubyte*)(m_ucPainting + 3 * (i * m_nWidth + j)),final , 3);
+			//glColor4ubv(color);
+			//glVertex2d(j, i);
+			//glEnd();
+
+		}
+
+	}
+	m_pUI->m_paintView->refresh();
+
+}
 
 //----------------------------------------------------------------
 // Save the specified image

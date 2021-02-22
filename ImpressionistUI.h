@@ -46,6 +46,12 @@ public:
 	Fl_Slider* m_ColorGSlider;
 	Fl_Slider* m_ColorBSlider;
 
+// for Dissolve image
+	Fl_Window* m_DissolveScaleDialog;
+	Fl_Slider* m_DissolveAlphaSlider;
+	Fl_Button* m_DissolveSelectFileButton;
+
+
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
 	ImpressionistDoc*	getDocument();
@@ -58,6 +64,7 @@ public:
 	int					getSize();
 	float* getRGBScale();
 	float getBrushAlpha();
+	float getDissolveAlpha();
 	void				setSize(int size);
 
 
@@ -71,6 +78,7 @@ private:
 	float m_nColorScaleB;
 
 	float m_nBrushAlpha;
+	float m_nDissolveAlpha;
 
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -81,6 +89,7 @@ private:
 	// All callbacks here.  Callbacks are declared 
 	// static
 	static void	cb_load_image(Fl_Menu_* o, void* v);
+	static void cb_load_Dissolveimage(Fl_Widget* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
 	static void	cb_clear_canvas(Fl_Menu_* o, void* v);
@@ -90,11 +99,14 @@ private:
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
 	static void cb_AlphaSlides(Fl_Widget* o, void* v);
+	static void cb_DissolveAlphaSlides(Fl_Widget* o, void* v);
 	static void cb_swapImage(Fl_Menu_* o, void* v);
 
 	static void cb_undo(Fl_Menu_* o, void* v);
 
 	static void cb_RGBscaleWidge(Fl_Menu_* o, void* v);
+
+	static void cb_DissolveWidge(Fl_Menu_* o, void* v);
 
 	static void cb_RSlides(Fl_Widget* o, void* v);
 

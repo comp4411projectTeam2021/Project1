@@ -12,7 +12,7 @@ W swap							yes
 B RGB scale						yes
 B blur/sharp brush					yes/no
 B 1 level undo						yes
-B dissolve						yes/no 
+B dissolve						yes 
 BW fade in/out input on output canvas			yes/no
 BW mural (blending)					yes/no
 BW alpha brush						yes/no

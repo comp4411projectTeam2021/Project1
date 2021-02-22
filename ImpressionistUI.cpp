@@ -180,6 +180,15 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName() );
 	if (newfile != NULL) {
 		pDoc->loadImage(newfile);
+}
+
+}void ImpressionistUI::cb_load_Dissolveimage(Fl_Widget* o, void* v)
+{
+	ImpressionistDoc *pDoc= ((ImpressionistUI*)(o->user_data()))->m_pDoc;
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName() );
+	if (newfile != NULL && pDoc->m_ucBitmap != NULL) {
+		pDoc->loadDissolveImage(newfile);
 	}
 }
 
@@ -288,6 +297,11 @@ void ImpressionistUI::cb_AlphaSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nBrushAlpha = float(((Fl_Slider*)o)->value());
 }
 
+void ImpressionistUI::cb_DissolveAlphaSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nDissolveAlpha = float(((Fl_Slider*)o)->value());
+}
+
 
 //-----------------------------------------------------------
 // Swap the original image with current painting image
@@ -313,6 +327,10 @@ void ImpressionistUI::cb_undo(Fl_Menu_* o, void* v)
 /// </summary>
 void ImpressionistUI::cb_RGBscaleWidge(Fl_Menu_* o, void* v) {
 	whoami(o)->m_RGBScaleDialog->show();
+}
+
+void ImpressionistUI::cb_DissolveWidge(Fl_Menu_* o, void* v) {
+	whoami(o)->m_DissolveScaleDialog->show();
 }
 
 void ImpressionistUI::cb_RSlides(Fl_Widget* o, void* v)
@@ -390,6 +408,9 @@ float* ImpressionistUI::getRGBScale()
 float ImpressionistUI::getBrushAlpha() {
 	return m_nBrushAlpha;
 }
+float ImpressionistUI::getDissolveAlpha() {
+	return m_nDissolveAlpha;
+}
 
 //-------------------------------------------------
 // Set the brush size
@@ -419,6 +440,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&ImageControl",		0, 0, 0, FL_SUBMENU },
 		{ "&Swap",	FL_ALT + 'S', (Fl_Callback*)ImpressionistUI::cb_swapImage },
 		{ "&Color Scale",	FL_ALT + 'C', (Fl_Callback*)ImpressionistUI::cb_RGBscaleWidge },
+		{ "&Dissolve",	FL_ALT + 'D', (Fl_Callback*)ImpressionistUI::cb_DissolveWidge },
 		{ 0 },
 
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
@@ -479,6 +501,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_nColorScaleG = 1.0;
 	m_nColorScaleB = 1.0;
 	m_nBrushAlpha = 1.0;
+	m_nDissolveAlpha = 1.0;
 
 
 	// brush dialog definition
@@ -561,4 +584,26 @@ ImpressionistUI::ImpressionistUI() {
 		m_ColorBSlider->align(FL_ALIGN_RIGHT);
 		m_ColorBSlider->callback(cb_BSlides);
 	m_RGBScaleDialog->end();
+
+	//Dissolve dialog
+	m_DissolveScaleDialog = new Fl_Window(400, 150, "Dissolve an image to paint view");
+
+		m_DissolveAlphaSlider = new Fl_Value_Slider(10, 10, 300, 20, "Alpha");
+		m_DissolveAlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_DissolveAlphaSlider->type(FL_HOR_NICE_SLIDER);
+		m_DissolveAlphaSlider->labelfont(FL_COURIER);
+		m_DissolveAlphaSlider->labelsize(12);
+		m_DissolveAlphaSlider->minimum(0);
+		m_DissolveAlphaSlider->maximum(1);
+		m_DissolveAlphaSlider->step(0.01);
+		m_DissolveAlphaSlider->value(m_nDissolveAlpha);
+		m_DissolveAlphaSlider->align(FL_ALIGN_RIGHT);
+		m_DissolveAlphaSlider->callback(cb_DissolveAlphaSlides);
+
+		Fl_Button* m_DissolveSelectFileButton = new Fl_Button(190, 40, 150, 20, "Select File");
+		m_DissolveSelectFileButton->user_data((void*)(this));   // record self to be used by static callback functions
+		m_DissolveSelectFileButton->callback(cb_load_Dissolveimage);
+
+	m_DissolveScaleDialog->end();
 }
+//cb_load_Disolveimage

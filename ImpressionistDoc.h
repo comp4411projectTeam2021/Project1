@@ -20,6 +20,7 @@ public:
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
 
 	int		loadImage(char *iname);			// called by the UI to load image
+	int loadDissolveImage(char* iname);
 	int		saveImage(char *iname);			// called by the UI to save image
 
 
@@ -49,6 +50,10 @@ public:
 	unsigned char*	m_ucPainting;
 	unsigned char*  m_ucSwapCache;
 	unsigned char*	m_ucLastStep;
+
+	// Bitmap for dissolve image
+	unsigned char*	m_ucDissolveImage;
+
 
 
 	// The current active brush.
