@@ -291,6 +291,15 @@ void ImpressionistUI::cb_swapImage(Fl_Menu_* o, void* v)
 	if(pDoc)
 		pDoc->SwapOriginal();
 }
+
+void ImpressionistUI::cb_undo(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+	if (pDoc)
+		pDoc->UndoStep();
+}
+
 /// <summary>
 /// show RGB scale dialog when clicked
 /// </summary>
@@ -390,6 +399,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+		{ "&Undo", FL_CTRL + 'z', (Fl_Callback *)ImpressionistUI::cb_undo},
 		
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },

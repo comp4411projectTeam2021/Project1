@@ -87,6 +87,8 @@ private:
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
 	static void cb_swapImage(Fl_Menu_* o, void* v);
 
+	static void cb_undo(Fl_Menu_* o, void* v);
+
 	static void cb_RGBscaleWidge(Fl_Menu_* o, void* v);
 
 	static void cb_RSlides(Fl_Widget* o, void* v);

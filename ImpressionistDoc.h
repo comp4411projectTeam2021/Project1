@@ -28,6 +28,10 @@ public:
 	int		getSize();						// get the UI size
 	void	setSize(int size);				// set the UI size
 	char*	getImageName();					// get the current image name
+
+
+
+	void UndoStep();
 	
 
 // Attributes
@@ -44,6 +48,7 @@ public:
 	unsigned char*	m_ucDisplayCopy;
 	unsigned char*	m_ucPainting;
 	unsigned char*  m_ucSwapCache;
+	unsigned char*	m_ucLastStep;
 
 
 	// The current active brush.

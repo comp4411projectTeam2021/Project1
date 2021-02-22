@@ -111,6 +111,7 @@ void PaintView::draw()
 		switch (eventToDo)
 		{
 		case LEFT_MOUSE_DOWN:
+			SaveStep();
 			m_pDoc->m_pCurrentBrush->BrushBegin(source, target);
 			break;
 		case LEFT_MOUSE_DRAG:
@@ -248,3 +249,9 @@ void PaintView::RestoreContent()
 
 	//	glDrawBuffer(GL_FRONT);
 }
+
+	
+
+	void PaintView::SaveStep() {
+		memcpy(m_pDoc->m_ucLastStep, m_pDoc->m_ucPainting, m_pDoc->m_nWidth * m_pDoc->m_nHeight * 3);
+	}

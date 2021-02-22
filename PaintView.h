@@ -31,6 +31,8 @@ public:
 
 	void RestoreContent();
 
+	void SaveStep();
+
 	ImpressionistDoc *m_pDoc;
 
 private:
