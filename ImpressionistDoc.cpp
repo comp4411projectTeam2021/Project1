@@ -14,6 +14,8 @@
 
 // Include individual brush headers here.
 #include "PointBrush.h"
+#include "LineBrush.h"
+#include "CircleBrush.h"
 
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
@@ -26,9 +28,11 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
+
 	m_ucDisplayCopy = NULL;
 	m_ucSwapCache = NULL;
 	m_ucOriginalCopy = NULL;
+
 
 
 	// create one instance of each brush
@@ -39,9 +43,9 @@ ImpressionistDoc::ImpressionistDoc()
 
 	// Note: You should implement these 5 brushes.  They are set the same (PointBrush) for now
 	ImpBrush::c_pBrushes[BRUSH_LINES]				
-		= new PointBrush( this, "Lines" );
+		= new LineBrush( this, "Lines" );
 	ImpBrush::c_pBrushes[BRUSH_CIRCLES]				
-		= new PointBrush( this, "Circles" );
+		= new CircleBrush( this, "Circles" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_POINTS]	
 		= new PointBrush( this, "Scattered Points" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_LINES]		
@@ -71,6 +75,7 @@ char* ImpressionistDoc::getImageName()
 	return m_imageName;
 }
 
+
 //---------------------------------------------------------
 // Called by the UI when the user changes the brush type.
 // type: one of the defined brush types.
@@ -85,7 +90,6 @@ void ImpressionistDoc::setBrushType(int type)
 //---------------------------------------------------------
 int ImpressionistDoc::getSize()
 {
-	
 	return m_pUI->getSize();
 }
 
@@ -93,6 +97,7 @@ int ImpressionistDoc::getSize()
 // Load the specified image
 // This is called by the UI when the load image button is 
 // pressed.
+
 //---------------------------------------------------------
 int ImpressionistDoc::loadImage(char *iname) 
 {
@@ -121,6 +126,7 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	m_ucBitmap		= data;
 
+
 	m_ucDisplayCopy = new unsigned char[width * height * 3];
 	m_ucOriginalCopy = new unsigned char[width * height * 3];
 	memcpy(m_ucDisplayCopy, m_ucBitmap, width * height * 3);
@@ -144,6 +150,7 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->refresh();
 
 
+
 	return 1;
 }
 
@@ -159,6 +166,7 @@ int ImpressionistDoc::saveImage(char *iname)
 	writeBMP(iname, m_nPaintWidth, m_nPaintHeight, m_ucPainting);
 
 	return 1;
+
 }
 
 //----------------------------------------------------------------
@@ -254,3 +262,4 @@ void ImpressionistDoc::SwapOriginal() {
 			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
 		}
 }
+
