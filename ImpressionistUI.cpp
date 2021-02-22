@@ -280,6 +280,14 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+/// <summary>
+/// update alpha value of brush
+/// </summary>
+void ImpressionistUI::cb_AlphaSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nBrushAlpha = float(((Fl_Slider*)o)->value());
+}
+
 
 //-----------------------------------------------------------
 // Swap the original image with current painting image
@@ -379,6 +387,10 @@ float* ImpressionistUI::getRGBScale()
 	return result;
 }
 
+float ImpressionistUI::getBrushAlpha() {
+	return m_nBrushAlpha;
+}
+
 //-------------------------------------------------
 // Set the brush size
 //-------------------------------------------------
@@ -466,6 +478,8 @@ ImpressionistUI::ImpressionistUI() {
 	m_nColorScaleR = 1.0;
 	m_nColorScaleG = 1.0;
 	m_nColorScaleB = 1.0;
+	m_nBrushAlpha = 1.0;
+
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -492,6 +506,19 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->value(m_nSize);
 		m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
 		m_BrushSizeSlider->callback(cb_sizeSlides);
+
+		// Add brush alpha slider to the dialog 
+		m_AlphaSlider = new Fl_Value_Slider(10, 110, 300, 20, "Alpha");
+		m_AlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
+		m_AlphaSlider->labelfont(FL_COURIER);
+		m_AlphaSlider->labelsize(12);
+		m_AlphaSlider->minimum(0);
+		m_AlphaSlider->maximum(1);
+		m_AlphaSlider->step(0.01);
+		m_AlphaSlider->value(m_nBrushAlpha);
+		m_AlphaSlider->align(FL_ALIGN_RIGHT);
+		m_AlphaSlider->callback(cb_AlphaSlides);
 
     m_brushDialog->end();	
 

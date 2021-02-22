@@ -54,6 +54,10 @@ void PaintView::draw()
 	glDrawBuffer(GL_FRONT_AND_BACK);
 #endif // !MESA
 
+	//Enable alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	if (!valid())
 	{
 
@@ -62,9 +66,8 @@ void PaintView::draw()
 		// We're only using 2-D, so turn off depth 
 		glDisable(GL_DEPTH_TEST);
 
-		//Enable alpha
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		
+
 
 		ortho();
 

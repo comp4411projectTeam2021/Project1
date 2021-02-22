@@ -38,6 +38,7 @@ public:
 	Fl_Choice*			m_BrushTypeChoice;
 
 	Fl_Slider*			m_BrushSizeSlider;
+	Fl_Slider*			m_AlphaSlider;
 	Fl_Button*          m_ClearCanvasButton;
 // for color adjust
 	Fl_Window* m_RGBScaleDialog;
@@ -56,6 +57,7 @@ public:
 
 	int					getSize();
 	float* getRGBScale();
+	float getBrushAlpha();
 	void				setSize(int size);
 
 
@@ -67,6 +69,8 @@ private:
 	float m_nColorScaleR;
 	float m_nColorScaleG;
 	float m_nColorScaleB;
+
+	float m_nBrushAlpha;
 
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -85,6 +89,7 @@ private:
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
+	static void cb_AlphaSlides(Fl_Widget* o, void* v);
 	static void cb_swapImage(Fl_Menu_* o, void* v);
 
 	static void cb_undo(Fl_Menu_* o, void* v);
