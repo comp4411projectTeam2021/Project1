@@ -106,7 +106,8 @@ void PaintView::draw()
 
 		int brushSize = m_pDoc->getSize();
 		Point source(coord.x + m_nStartCol, m_nEndRow - coord.y);
-		Point target(max(min(drawWidth - brushSize / 2, coord.x), brushSize / 2), m_nWindowHeight - max(brushSize / 2, min(drawHeight - brushSize / 2, coord.y)));
+		//Point target(max(min(drawWidth - brushSize / 2, coord.x), brushSize / 2), m_nWindowHeight - max(brushSize / 2, min(drawHeight - brushSize / 2, coord.y)));
+		Point target(coord.x, m_nWindowHeight - coord.y);
 		// This is the event handler
 		switch (eventToDo)
 		{
@@ -116,6 +117,8 @@ void PaintView::draw()
 			break;
 		case LEFT_MOUSE_DRAG:
 			m_pDoc->m_pCurrentBrush->BrushMove(source, target);
+			SaveCurrentContent();
+			RestoreContent();
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd(source, target);
