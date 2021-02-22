@@ -280,6 +280,42 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+
+//-----------------------------------------------------------
+// Swap the original image with current painting image
+//-----------------------------------------------------------
+void ImpressionistUI::cb_swapImage(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+	if(pDoc)
+		pDoc->SwapOriginal();
+}
+/// <summary>
+/// show RGB scale dialog when clicked
+/// </summary>
+void ImpressionistUI::cb_RGBscaleWidge(Fl_Menu_* o, void* v) {
+	whoami(o)->m_RGBScaleDialog->show();
+}
+
+void ImpressionistUI::cb_RSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nColorScaleR = int(((Fl_Slider*)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_origView->redraw();
+}
+void ImpressionistUI::cb_GSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nColorScaleG = int(((Fl_Slider*)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_origView->redraw();
+
+}
+void ImpressionistUI::cb_BSlides(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_nColorScaleB = int(((Fl_Slider*)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_origView->redraw();
+
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -328,6 +364,12 @@ int ImpressionistUI::getSize()
 	return m_nSize;
 }
 
+float* ImpressionistUI::getRGBScale()
+{
+	float result[3] = { m_ColorRSlider->value(),m_ColorGSlider->value(),m_ColorBSlider->value() };
+	return result;
+}
+
 //-------------------------------------------------
 // Set the brush size
 //-------------------------------------------------
@@ -338,6 +380,8 @@ void ImpressionistUI::setSize( int size )
 	if (size<=40) 
 		m_BrushSizeSlider->value(m_nSize);
 }
+
+
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
@@ -350,9 +394,16 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 
+	{ "&ImageControl",		0, 0, 0, FL_SUBMENU },
+		{ "&Swap",	FL_ALT + 'S', (Fl_Callback*)ImpressionistUI::cb_swapImage },
+		{ "&Color Scale",	FL_ALT + 'C', (Fl_Callback*)ImpressionistUI::cb_RGBscaleWidge },
+		{ 0 },
+
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },
 		{ 0 },
+
+
 
 	{ 0 }
 };
@@ -402,6 +453,9 @@ ImpressionistUI::ImpressionistUI() {
 	// init values
 
 	m_nSize = 10;
+	m_nColorScaleR = 1.0;
+	m_nColorScaleG = 1.0;
+	m_nColorScaleB = 1.0;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -431,4 +485,43 @@ ImpressionistUI::ImpressionistUI() {
 
     m_brushDialog->end();	
 
+
+	// RGB dialog
+	m_RGBScaleDialog = new Fl_Window(400, 150, "Color adjustment ");
+		m_ColorRSlider = new Fl_Value_Slider(10, 10, 300, 20, "R");
+		m_ColorRSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_ColorRSlider->type(FL_HOR_NICE_SLIDER);
+		m_ColorRSlider->labelfont(FL_COURIER);
+		m_ColorRSlider->labelsize(12);
+		m_ColorRSlider->minimum(0);
+		m_ColorRSlider->maximum(1);
+		m_ColorRSlider->step(0.01);
+		m_ColorRSlider->value(m_nColorScaleR);
+		m_ColorRSlider->align(FL_ALIGN_RIGHT);
+		m_ColorRSlider->callback(cb_RSlides);
+
+		m_ColorGSlider = new Fl_Value_Slider(10, 35, 300, 20, "G");
+		m_ColorGSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_ColorGSlider->type(FL_HOR_NICE_SLIDER);
+		m_ColorGSlider->labelfont(FL_COURIER);
+		m_ColorGSlider->labelsize(12);
+		m_ColorGSlider->minimum(0);
+		m_ColorGSlider->maximum(1);
+		m_ColorGSlider->step(0.01);
+		m_ColorGSlider->value(m_nColorScaleG);
+		m_ColorGSlider->align(FL_ALIGN_RIGHT);
+		m_ColorGSlider->callback(cb_GSlides);
+
+		m_ColorBSlider = new Fl_Value_Slider(10, 60, 300, 20, "B");
+		m_ColorBSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_ColorBSlider->type(FL_HOR_NICE_SLIDER);
+		m_ColorBSlider->labelfont(FL_COURIER);
+		m_ColorBSlider->labelsize(12);
+		m_ColorBSlider->minimum(0);
+		m_ColorBSlider->maximum(1);
+		m_ColorBSlider->step(0.01);
+		m_ColorBSlider->value(m_nColorScaleG);
+		m_ColorBSlider->align(FL_ALIGN_RIGHT);
+		m_ColorBSlider->callback(cb_BSlides);
+	m_RGBScaleDialog->end();
 }

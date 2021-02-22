@@ -29,6 +29,11 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
 
+	m_ucDisplayCopy = NULL;
+	m_ucSwapCache = NULL;
+	m_ucOriginalCopy = NULL;
+
+
 
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
@@ -70,6 +75,7 @@ char* ImpressionistDoc::getImageName()
 	return m_imageName;
 }
 
+
 //---------------------------------------------------------
 // Called by the UI when the user changes the brush type.
 // type: one of the defined brush types.
@@ -91,6 +97,7 @@ int ImpressionistDoc::getSize()
 // Load the specified image
 // This is called by the UI when the load image button is 
 // pressed.
+
 //---------------------------------------------------------
 int ImpressionistDoc::loadImage(char *iname) 
 {
@@ -113,9 +120,17 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// release old storage
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
+	if ( m_ucOriginalCopy ) delete [] m_ucOriginalCopy;
+	if ( m_ucDisplayCopy ) delete [] m_ucDisplayCopy;
 	if ( m_ucPainting ) delete [] m_ucPainting;
 
 	m_ucBitmap		= data;
+
+
+	m_ucDisplayCopy = new unsigned char[width * height * 3];
+	m_ucOriginalCopy = new unsigned char[width * height * 3];
+	memcpy(m_ucDisplayCopy, m_ucBitmap, width * height * 3);
+	memcpy(m_ucOriginalCopy, m_ucBitmap, width * height * 3);
 
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
@@ -135,6 +150,7 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->refresh();
 
 
+
 	return 1;
 }
 
@@ -150,6 +166,7 @@ int ImpressionistDoc::saveImage(char *iname)
 	writeBMP(iname, m_nPaintWidth, m_nPaintHeight, m_ucPainting);
 
 	return 1;
+
 }
 
 //----------------------------------------------------------------
@@ -194,11 +211,55 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
 }
 
+GLubyte* ImpressionistDoc::GetDisplayImgPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_ucDisplayCopy + 3 * (y * m_nWidth + x));
+}
+
+GLubyte* ImpressionistDoc::GetFileCopyPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_ucOriginalCopy + 3 * (y * m_nWidth + x));
+}
+
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
 GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 {
 	return GetOriginalPixel( p.x, p.y );
+}
+
+void ImpressionistDoc::SwapOriginal() {
+	if (m_ucBitmap)
+		if (m_ucSwapCache) {
+			delete[] m_ucBitmap;
+			m_ucBitmap = m_ucSwapCache;
+			m_ucSwapCache = NULL;
+		}
+		else {
+			m_ucSwapCache = m_ucBitmap;
+			m_ucBitmap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 3];
+			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
+		}
 }
 
