@@ -75,8 +75,10 @@ void OriginalView::draw()
 			int brushSize = m_pDoc->getSize();
 			GLubyte color[3] = { 255,0,0 };
 			Point mousePoint = PaintView::getCurrentMOusePos();
-			Point* disp = new Point(max(min(drawWidth - brushSize / 2, mousePoint.x), brushSize / 2), drawHeight - max(brushSize / 2, min(drawHeight - brushSize / 2, mousePoint.y)));
+			//Point* disp = new Point(max(min(drawWidth - brushSize / 2, mousePoint.x), brushSize / 2), drawHeight - max(brushSize / 2, min(drawHeight - brushSize / 2, mousePoint.y)));
+			Point* disp = new Point(mousePoint.x, drawHeight - mousePoint.y);
 			//printf("%d,%d \n", disp->x, disp->y);
+
 		//Scale color
 			for (int i = 0; i < drawWidth; i++) {
 				for (int j = 0; j < drawHeight; j++) {
