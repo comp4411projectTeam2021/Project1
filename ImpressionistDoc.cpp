@@ -309,12 +309,14 @@ void ImpressionistDoc::SwapOriginal() {
 		if (m_ucSwapCache) {
 			delete[] m_ucBitmap;
 			m_ucBitmap = m_ucSwapCache;
+			memcpy(m_ucOriginalCopy, m_ucBitmap, m_nPaintWidth * m_nPaintHeight * 3);
 			m_ucSwapCache = NULL;
 		}
 		else {
 			m_ucSwapCache = m_ucBitmap;
 			m_ucBitmap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 3];
 			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
+			memcpy(m_ucOriginalCopy, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
 		}
 	m_pUI->m_origView->refresh();
 }
