@@ -29,6 +29,11 @@ static int		eventToDo;
 static int		isAnEvent=0;
 static Point	coord;
 
+Point PaintView::getCurrentMOusePos()
+{
+	return coord;
+}
+
 PaintView::PaintView(int			x, 
 					 int			y, 
 					 int			w, 
@@ -48,6 +53,10 @@ void PaintView::draw()
 	// To avoid flicker on some machines.
 	glDrawBuffer(GL_FRONT_AND_BACK);
 	#endif // !MESA
+	
+		//Enable alpha
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if(!valid())
 	{
@@ -106,10 +115,13 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
+				SaveStep();
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
 			break;
 		case LEFT_MOUSE_DRAG:
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
+							SaveCurrentContent();
+			RestoreContent();
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
@@ -244,3 +256,6 @@ void PaintView::RestoreContent()
 
 //	glDrawBuffer(GL_FRONT);
 }
+	void PaintView::SaveStep() {
+		memcpy(m_pDoc->m_ucLastStep, m_pDoc->m_ucPainting, m_pDoc->m_nWidth * m_pDoc->m_nHeight * 3);
+	}
