@@ -43,7 +43,6 @@ public:
 
 	Fl_Slider* m_BrushWidthSlider;
 	Fl_Slider* m_BrushAngleSlider;
-	Fl_Slider* m_BrushAlphaSlider;
 	Fl_Button*          m_ClearCanvasButton;
 // for color adjust
 	Fl_Window* m_RGBScaleDialog;

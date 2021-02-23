@@ -376,10 +376,10 @@ void ImpressionistUI::cb_angleSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_LineAngle = int(((Fl_Slider*)o)->value());
 }
 
-void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
-{
-	((ImpressionistUI*)(o->user_data()))->m_Alpha = int(((Fl_Slider*)o)->value());
-}
+//void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
+//{
+//	((ImpressionistUI*)(o->user_data()))->m_Alpha = int(((Fl_Slider*)o)->value());
+//}
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -591,7 +591,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->callback(cb_sizeSlides);
 	
 		// Add brush alpha slider to the dialog 
-		m_AlphaSlider = new Fl_Value_Slider(10, 110, 300, 20, "Alpha");
+		m_AlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
 		m_AlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
 		m_AlphaSlider->type(FL_HOR_NICE_SLIDER);
 		m_AlphaSlider->labelfont(FL_COURIER);
@@ -631,19 +631,7 @@ ImpressionistUI::ImpressionistUI() {
 		//if (m_BrushTypeChoice->value() == 1 || m_BrushTypeChoice->value() == 4)
 		m_BrushAngleSlider->callback(cb_angleSlides);
 
-		m_BrushAlphaSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha"); //std::cout << m_BrushTypeChoice->value() << std::endl;
-		//if(m_BrushTypeChoice->value()==1|| m_BrushTypeChoice->value()==4)
-		m_BrushAlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
-		m_BrushAlphaSlider->type(FL_HOR_NICE_SLIDER);
-		m_BrushAlphaSlider->labelfont(FL_COURIER);
-		m_BrushAlphaSlider->labelsize(12);
-		m_BrushAlphaSlider->minimum(0);
-		m_BrushAlphaSlider->maximum(1);
-		m_BrushAlphaSlider->step(0.01);
-		m_BrushAlphaSlider->value(m_Alpha);
-		m_BrushAlphaSlider->align(FL_ALIGN_RIGHT);
-		//if (m_BrushTypeChoice->value() == 1 || m_BrushTypeChoice->value() == 4)
-		m_BrushAlphaSlider->callback(cb_alphaSlides);
+
 
     m_brushDialog->end();	
 	

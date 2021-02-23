@@ -8,6 +8,7 @@
 #include "impressionistDoc.h"
 #include "ImpressionistUI.h"
 #include "originalview.h"
+#include "PaintView.h"
 
 #ifndef WIN32
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
@@ -99,7 +100,8 @@ void OriginalView::draw()
 
 			delete(disp);
 		}
-		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
+
+		bitstart = m_pDoc->m_ucDisplayCopy + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
 
 		// just copy image to GLwindow conceptually
 		glRasterPos2i( 0, m_nWindowHeight - drawHeight );

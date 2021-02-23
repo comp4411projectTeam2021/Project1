@@ -316,6 +316,7 @@ void ImpressionistDoc::SwapOriginal() {
 			m_ucBitmap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 3];
 			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
 		}
+	m_pUI->m_origView->refresh();
 }
 
 
