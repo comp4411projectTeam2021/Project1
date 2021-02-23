@@ -170,7 +170,45 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	return 1;
 }
+int ImpressionistDoc::loadDissolveImage(char* iname) {
+	// try to open the image to read
+	unsigned char* data;
+	int				width,
+		height;
 
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	if (m_ucDissolveImage) delete[] m_ucDissolveImage;
+
+	m_ucDissolveImage = data;
+
+	glPointSize(10.0f);
+
+	GLubyte originalColor[3];
+	GLubyte disolveColor[3];
+	float alpha = m_pUI->getDissolveAlpha();
+	for (int i = 0; i < min(height, m_nPaintHeight); i++) {
+		for (int j = 0; j < min(width, m_nWidth); j++) {
+			/*glBegin(GL_POINTS);*/
+			
+			memcpy(disolveColor, (GLubyte*)(m_ucDissolveImage + 3 * (i * width + j)), 3);
+			memcpy(originalColor,(GLubyte*)(m_ucPainting + 3 * (i * m_nWidth + j)),  3);
+			GLubyte final[3] = { originalColor[0] * (1 - alpha) + disolveColor[0] * alpha, originalColor[1] * (1 - alpha) + disolveColor[1] * alpha, originalColor[2] * (1 - alpha) + disolveColor[2] * alpha, };
+			memcpy((GLubyte*)(m_ucPainting + 3 * (i * m_nWidth + j)),final , 3);
+			//glColor4ubv(color);
+			//glVertex2d(j, i);
+			//glEnd();
+
+		}
+
+	}
+	m_pUI->m_paintView->refresh();
+
+}
 
 //----------------------------------------------------------------
 // Save the specified image
@@ -183,6 +221,7 @@ int ImpressionistDoc::saveImage(char *iname)
 	writeBMP(iname, m_nPaintWidth, m_nPaintHeight, m_ucPainting);
 
 	return 1;
+
 }
 
 //----------------------------------------------------------------
@@ -227,11 +266,62 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
 }
 
+GLubyte* ImpressionistDoc::GetDisplayImgPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_ucDisplayCopy + 3 * (y * m_nWidth + x));
+}
+
+GLubyte* ImpressionistDoc::GetFileCopyPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_ucOriginalCopy + 3 * (y * m_nWidth + x));
+}
+
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
 GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 {
 	return GetOriginalPixel( p.x, p.y );
+}
+
+void ImpressionistDoc::SwapOriginal() {
+	if (m_ucBitmap)
+		if (m_ucSwapCache) {
+			delete[] m_ucBitmap;
+			m_ucBitmap = m_ucSwapCache;
+			m_ucSwapCache = NULL;
+		}
+		else {
+			m_ucSwapCache = m_ucBitmap;
+			m_ucBitmap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 3];
+			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
+		}
+}
+
+
+
+void ImpressionistDoc::UndoStep() {
+	memcpy(m_ucPainting, m_ucLastStep, m_nWidth * m_nHeight * 3);
+	m_pUI->m_paintView->redraw();
 }
 
