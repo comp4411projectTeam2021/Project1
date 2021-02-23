@@ -16,7 +16,9 @@
 #include "PointBrush.h"
 #include "LineBrush.h"
 #include "CircleBrush.h"
-
+#include "ScatteredPointBrush.h"
+#include "ScatteredLineBrush.h"
+#include "ScatteredCircleBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -28,14 +30,6 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
-
-	m_ucDisplayCopy = NULL;
-	m_ucSwapCache = NULL;
-	m_ucOriginalCopy = NULL;
-	m_ucLastStep = NULL;
-
-	m_ucDissolveImage = NULL;
-
 
 
 	// create one instance of each brush
@@ -50,11 +44,11 @@ ImpressionistDoc::ImpressionistDoc()
 	ImpBrush::c_pBrushes[BRUSH_CIRCLES]				
 		= new CircleBrush( this, "Circles" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_POINTS]	
-		= new PointBrush( this, "Scattered Points" );
+		= new ScatteredPointBrush( this, "Scattered Points" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_LINES]		
-		= new PointBrush( this, "Scattered Lines" );
+		= new ScatteredLineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
-		= new PointBrush( this, "Scattered Circles" );
+		= new ScatteredCircleBrush( this, "Scattered Circles" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
@@ -78,7 +72,6 @@ char* ImpressionistDoc::getImageName()
 	return m_imageName;
 }
 
-
 //---------------------------------------------------------
 // Called by the UI when the user changes the brush type.
 // type: one of the defined brush types.
@@ -88,6 +81,11 @@ void ImpressionistDoc::setBrushType(int type)
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[type];
 }
 
+void ImpressionistDoc::setDirectionType(int type)
+{
+	m_pCurrentBrush->m_DirectionType = type;
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
@@ -95,12 +93,19 @@ int ImpressionistDoc::getSize()
 {
 	return m_pUI->getSize();
 }
+int ImpressionistDoc::getWidth()
+{
+	return m_pUI->getWidth();
+}
+int ImpressionistDoc::getAngle()
+{
+	return m_pUI->getAngle();
+}
 
 //---------------------------------------------------------
 // Load the specified image
 // This is called by the UI when the load image button is 
 // pressed.
-
 //---------------------------------------------------------
 int ImpressionistDoc::loadImage(char *iname) 
 {
@@ -123,25 +128,13 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// release old storage
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
-	if ( m_ucOriginalCopy ) delete [] m_ucOriginalCopy;
-	if ( m_ucDisplayCopy ) delete [] m_ucDisplayCopy;
 	if ( m_ucPainting ) delete [] m_ucPainting;
-	if (m_ucLastStep) delete[] m_ucLastStep;
 
 	m_ucBitmap		= data;
 
-
-	m_ucDisplayCopy = new unsigned char[width * height * 3];
-	m_ucOriginalCopy = new unsigned char[width * height * 3];
-	memcpy(m_ucDisplayCopy, m_ucBitmap, width * height * 3);
-	memcpy(m_ucOriginalCopy, m_ucBitmap, width * height * 3);
-
 	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
-	m_ucLastStep = new unsigned char[width * height * 3];
 	memset(m_ucPainting, 0, width*height*3);
-	memset(m_ucLastStep, 0, width * height * 3);
-
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
@@ -157,49 +150,9 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->refresh();
 
 
-
 	return 1;
 }
 
-int ImpressionistDoc::loadDissolveImage(char* iname) {
-	// try to open the image to read
-	unsigned char* data;
-	int				width,
-		height;
-
-	if ((data = readBMP(iname, width, height)) == NULL)
-	{
-		fl_alert("Can't load bitmap file");
-		return 0;
-	}
-
-	if (m_ucDissolveImage) delete[] m_ucDissolveImage;
-
-	m_ucDissolveImage = data;
-
-	glPointSize(10.0f);
-
-	GLubyte originalColor[3];
-	GLubyte disolveColor[3];
-	float alpha = m_pUI->getDissolveAlpha();
-	for (int i = 0; i < min(height, m_nPaintHeight); i++) {
-		for (int j = 0; j < min(width, m_nWidth); j++) {
-			/*glBegin(GL_POINTS);*/
-			
-			memcpy(disolveColor, (GLubyte*)(m_ucDissolveImage + 3 * (i * width + j)), 3);
-			memcpy(originalColor,(GLubyte*)(m_ucPainting + 3 * (i * m_nWidth + j)),  3);
-			GLubyte final[3] = { originalColor[0] * (1 - alpha) + disolveColor[0] * alpha, originalColor[1] * (1 - alpha) + disolveColor[1] * alpha, originalColor[2] * (1 - alpha) + disolveColor[2] * alpha, };
-			memcpy((GLubyte*)(m_ucPainting + 3 * (i * m_nWidth + j)),final , 3);
-			//glColor4ubv(color);
-			//glVertex2d(j, i);
-			//glEnd();
-
-		}
-
-	}
-	m_pUI->m_paintView->refresh();
-
-}
 
 //----------------------------------------------------------------
 // Save the specified image
@@ -212,7 +165,6 @@ int ImpressionistDoc::saveImage(char *iname)
 	writeBMP(iname, m_nPaintWidth, m_nPaintHeight, m_ucPainting);
 
 	return 1;
-
 }
 
 //----------------------------------------------------------------
@@ -257,36 +209,6 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
 }
 
-GLubyte* ImpressionistDoc::GetDisplayImgPixel(int x, int y)
-{
-	if (x < 0)
-		x = 0;
-	else if (x >= m_nWidth)
-		x = m_nWidth - 1;
-
-	if (y < 0)
-		y = 0;
-	else if (y >= m_nHeight)
-		y = m_nHeight - 1;
-
-	return (GLubyte*)(m_ucDisplayCopy + 3 * (y * m_nWidth + x));
-}
-
-GLubyte* ImpressionistDoc::GetFileCopyPixel(int x, int y)
-{
-	if (x < 0)
-		x = 0;
-	else if (x >= m_nWidth)
-		x = m_nWidth - 1;
-
-	if (y < 0)
-		y = 0;
-	else if (y >= m_nHeight)
-		y = m_nHeight - 1;
-
-	return (GLubyte*)(m_ucOriginalCopy + 3 * (y * m_nWidth + x));
-}
-
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
@@ -295,23 +217,3 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 	return GetOriginalPixel( p.x, p.y );
 }
 
-void ImpressionistDoc::SwapOriginal() {
-	if (m_ucBitmap)
-		if (m_ucSwapCache) {
-			delete[] m_ucBitmap;
-			m_ucBitmap = m_ucSwapCache;
-			m_ucSwapCache = NULL;
-		}
-		else {
-			m_ucSwapCache = m_ucBitmap;
-			m_ucBitmap = new unsigned char[m_nPaintWidth * m_nPaintHeight * 3];
-			memcpy(m_ucBitmap, m_ucPainting, m_nPaintWidth * m_nPaintHeight * 3);
-		}
-}
-
-
-
-void ImpressionistDoc::UndoStep() {
-	memcpy(m_ucPainting, m_ucLastStep, m_nWidth * m_nHeight * 3);
-	m_pUI->m_paintView->redraw();
-}

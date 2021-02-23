@@ -15,7 +15,8 @@ ImpBrush**	ImpBrush::c_pBrushes	= NULL;
 ImpBrush::ImpBrush(ImpressionistDoc*	pDoc, 
 				   char*				name) :
 					m_pDoc(pDoc), 
-					m_pBrushName(name)
+					m_pBrushName(name),
+					m_DirectionType(RIGHT_MOUSE)
 {
 }
 
@@ -45,10 +46,10 @@ void ImpBrush::SetColor (const Point source)
 	ImpressionistDoc* pDoc = GetDocument();
 
 
-	GLubyte color[4] = {0,0,0,pDoc->m_pUI->getBrushAlpha()*255};
+	GLubyte color[3];
 
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
  
-	glColor4ubv( color );
+	glColor3ubv( color );
 
 }
