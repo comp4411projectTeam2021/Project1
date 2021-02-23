@@ -6,6 +6,7 @@
 
 #include "impressionist.h"
 #include "impressionistDoc.h"
+#include "ImpressionistUI.h"
 #include "originalview.h"
 
 #ifndef WIN32
@@ -65,7 +66,39 @@ void OriginalView::draw()
 		if ( startrow < 0 ) 
 			startrow = 0;
 
+		{
 
+
+			int brushSize = m_pDoc->getSize();
+			GLubyte color[3] = { 255,0,0 };
+			Point mousePoint = PaintView::getCurrentMOusePos();
+			//Point* disp = new Point(max(min(drawWidth - brushSize / 2, mousePoint.x), brushSize / 2), drawHeight - max(brushSize / 2, min(drawHeight - brushSize / 2, mousePoint.y)));
+			Point* disp = new Point(mousePoint.x, drawHeight - mousePoint.y);
+			//printf("%d,%d \n", disp->x, disp->y);
+
+		//Scale color
+			for (int i = 0; i < drawWidth; i++) {
+				for (int j = 0; j < drawHeight; j++) {
+					GLubyte* beforeColor = m_pDoc->GetFileCopyPixel(i, j);
+					float* scaleFactor = m_pDoc->m_pUI->getRGBScale();
+					GLubyte afterColor[3] = { beforeColor[0]* scaleFactor [0],beforeColor[1] * scaleFactor[1] ,beforeColor[2] * scaleFactor[2] };
+					memcpy(m_pDoc->GetOriginalPixel(i, j), afterColor, 3);
+
+				}
+			}
+
+		//Marker
+			memcpy(m_pDoc->m_ucDisplayCopy, m_pDoc->m_ucBitmap, m_pDoc->m_nWidth * m_pDoc->m_nHeight * 3);
+
+
+			for (int i = -brushSize / 2; i < brushSize / 2; i++) {
+				for (int j = -brushSize / 2; j < brushSize / 2; j++) {
+					memcpy(m_pDoc->GetDisplayImgPixel((*disp).x + i, (*disp).y + j), color, 3);
+				}
+			}
+
+			delete(disp);
+		}
 		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
 
 		// just copy image to GLwindow conceptually
