@@ -30,6 +30,13 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
+	
+	m_ucDisplayCopy = NULL;
+	m_ucSwapCache = NULL;
+	m_ucOriginalCopy = NULL;
+	m_ucLastStep = NULL;
+
+	m_ucDissolveImage = NULL;
 
 
 	// create one instance of each brush
