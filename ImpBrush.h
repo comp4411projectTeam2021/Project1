@@ -21,14 +21,6 @@ enum
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
-enum
-{
-	RIGHT_MOUSE = 0,
-	GRADIENT,
-	BRUSH_DIRECTION,
-	NUM_DIRECTION_TYPE
-};
-
 
 class ImpressionistDoc; // Pre-declaring class
 
@@ -51,10 +43,6 @@ public:
 	virtual void BrushBegin( const Point source, const Point target ) = 0;
 	virtual void BrushMove( const Point source, const Point target ) = 0;
 	virtual void BrushEnd( const Point source, const Point target ) = 0;
-	virtual void DirectionBegin(const Point source, const Point target) {}
-	virtual void DirectionMove(const Point source, const Point target) {}
-	virtual void DirectionEnd(const Point source, const Point target) {}
-	//void setDirectionType(int type);
 
 	// according to the source image and the position, determine the draw color
 	void SetColor( const Point source );
@@ -67,7 +55,6 @@ public:
 	
 	static int			c_nBrushCount;	// How many brushes we have,
 	static ImpBrush**	c_pBrushes;		// and what they are.
-	int m_DirectionType;
 
 private:
 	ImpressionistDoc*	m_pDoc;

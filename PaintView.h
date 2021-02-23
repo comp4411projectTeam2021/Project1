@@ -18,6 +18,7 @@ class ImpressionistDoc;
 class PaintView : public Fl_Gl_Window
 {
 public:
+	static Point getCurrentMOusePos();
 	PaintView(int x, int y, int w, int h, const char* l);
 	void draw();
 	int handle(int event);
@@ -29,6 +30,8 @@ public:
 	void SaveCurrentContent();
 
 	void RestoreContent();
+
+	void SaveStep();
 
 	ImpressionistDoc *m_pDoc;
 
