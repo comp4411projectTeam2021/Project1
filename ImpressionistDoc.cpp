@@ -135,13 +135,24 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// release old storage
 	if ( m_ucBitmap ) delete [] m_ucBitmap;
+	if ( m_ucOriginalCopy ) delete [] m_ucOriginalCopy;
+	if ( m_ucDisplayCopy ) delete [] m_ucDisplayCopy;
 	if ( m_ucPainting ) delete [] m_ucPainting;
+	if (m_ucLastStep) delete[] m_ucLastStep;
 
 	m_ucBitmap		= data;
 
 	// allocate space for draw view
+	m_ucDisplayCopy = new unsigned char[width * height * 3];
+	m_ucOriginalCopy = new unsigned char[width * height * 3];
+	memcpy(m_ucDisplayCopy, m_ucBitmap, width * height * 3);
+	memcpy(m_ucOriginalCopy, m_ucBitmap, width * height * 3);
+
+	// allocate space for draw view
 	m_ucPainting	= new unsigned char [width*height*3];
+	m_ucLastStep = new unsigned char[width * height * 3];
 	memset(m_ucPainting, 0, width*height*3);
+	memset(m_ucLastStep, 0, width * height * 3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
