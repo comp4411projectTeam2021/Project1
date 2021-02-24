@@ -194,6 +194,16 @@ void ImpressionistUI::cb_load_Dissolveimage(Fl_Widget* o, void* v)
 	}
 }
 
+void ImpressionistUI::cb_load_Another_image(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc *pDoc= whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName() );
+	if (newfile != NULL && pDoc->m_ucBitmap != NULL) {
+		pDoc->loadAnotherImage(newfile);
+	}
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -306,12 +316,20 @@ void ImpressionistUI::cb_DissolveAlphaSlides(Fl_Widget* o, void* v){
 //-----------------------------------------------------------
 // Swap the original image with current painting image
 //-----------------------------------------------------------
-void ImpressionistUI::cb_swapImage(Fl_Menu_* o, void* v)
+void ImpressionistUI::cb_swapPaintWithOriginal(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc* pDoc = whoami(o)->getDocument();
 
 	if(pDoc)
-		pDoc->SwapOriginal();
+		pDoc->SwapPaintviewWithOriginal();
+}
+
+void ImpressionistUI::cb_swapPaintWithAnother(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+	if(pDoc)
+		pDoc->swapWithAnother();
 }
 
 void ImpressionistUI::cb_undo(Fl_Menu_* o, void* v){
@@ -482,12 +500,16 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-		{ "&Undo", FL_CTRL + 'z', (Fl_Callback *)ImpressionistUI::cb_undo},
+		{ "&Undo", FL_CTRL + 'z', (Fl_Callback *)ImpressionistUI::cb_undo, 0, FL_MENU_DIVIDER },
+
+		{ "Load &Another Image...",	FL_ALT + 'a', (Fl_Callback*)ImpressionistUI::cb_load_Another_image , 0, FL_MENU_DIVIDER },
+
 	
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 	{ "&ImageControl",		0, 0, 0, FL_SUBMENU },
-		{ "&Swap",	FL_ALT + 'S', (Fl_Callback*)ImpressionistUI::cb_swapImage },
+		{ "Swap &Paintview with original",	FL_ALT + 'P', (Fl_Callback*)ImpressionistUI::cb_swapPaintWithOriginal },
+		{ "Swap &Original with Another",	FL_ALT + 'O', (Fl_Callback*)ImpressionistUI::cb_swapPaintWithAnother },
 		{ "&Color Scale",	FL_ALT + 'C', (Fl_Callback*)ImpressionistUI::cb_RGBscaleWidge },
 		{ "&Dissolve",	FL_ALT + 'D', (Fl_Callback*)ImpressionistUI::cb_DissolveWidge },
 		{ 0 },

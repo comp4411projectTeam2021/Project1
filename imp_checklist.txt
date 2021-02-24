@@ -6,15 +6,15 @@ HKUST login(s): jluay, yxuck
 Delete yes/no when appropriate
 
 W per new brush						yes/no
-W border clipping					yes
-W (red) marker						yes
-W swap							yes
-B RGB scale						yes
+-W border clipping					yes
+-W (red) marker						yes
+-W swap							yes
+-B RGB scale						yes
 B blur/sharp brush					yes/no
-B 1 level undo						yes
-B dissolve						yes 
+-B 1 level undo						yes
+-B dissolve						yes 
 BW fade in/out input on output canvas			yes/no
-BW mural (blending)					yes/no
+-BW mural (blending)					yes
 BW alpha brush						yes/no
 BW automatic paint whole image				yes/no
 BW gradient from user-specified image			yes/no
@@ -27,3 +27,5 @@ BW edge clipping					yes/no
 4B mosaic						yes/no
 4B impressionist video with temporal coherency		yes/no
 8B Bayesian matting					yes/no
+
+Total: 6

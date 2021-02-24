@@ -115,8 +115,12 @@ private:
 	static void	cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_AlphaSlides(Fl_Widget* o, void* v);
 	static void cb_DissolveAlphaSlides(Fl_Widget* o, void* v);
-	static void cb_swapImage(Fl_Menu_* o, void* v);
+	static void cb_swapPaintWithOriginal(Fl_Menu_* o, void* v);
+	static void cb_swapPaintWithAnother(Fl_Menu_* o, void* v);
 	static void cb_load_Dissolveimage(Fl_Widget* o, void* v);
+
+
+	static void cb_load_Another_image(Fl_Menu_* o, void* v);
 
 
 	static void cb_undo(Fl_Menu_* o, void* v);
