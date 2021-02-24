@@ -41,6 +41,8 @@ ImpressionistDoc::ImpressionistDoc()
 
 	m_ucDissolveImage = NULL;
 
+	currentKernal = NULL;
+
 
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;

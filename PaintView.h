@@ -39,6 +39,9 @@ public:
 
 	bool toAutoDraw;
 
+	bool doConverlution;
+
+
 private:
 	GLvoid* m_pPaintBitstart;
 	int		m_nDrawWidth,

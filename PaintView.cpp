@@ -45,6 +45,8 @@ PaintView::PaintView(int			x,
 	m_nWindowWidth = w;
 	m_nWindowHeight = h;
 	toAutoDraw = false;
+	doConverlution = false;
+
 }
 
 
@@ -102,6 +104,20 @@ void PaintView::draw()
 			autoDraw(m_pDoc->m_pUI->m_AutoDrawRandomCheck->value());
 			toAutoDraw = false;
 
+		}
+		else if (doConverlution) {
+			for (int x = 0; x < m_nDrawWidth; x++) {
+				for (int y = 0; y < m_nDrawHeight; y++) {
+					const Point target(x, m_nWindowHeight - y);
+					m_pDoc->currentKernal->BrushBegin(target, target);
+				}
+				glFlush();
+			}
+
+			SaveCurrentContent();
+			RestoreContent();
+			redraw();
+			doConverlution = false;
 		}
 		else {
 			if (!isAnEvent)

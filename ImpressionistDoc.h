@@ -9,6 +9,7 @@
 
 #include "impressionist.h"
 #include "bitmap.h"
+#include "KernalBruah.h"
 
 class ImpressionistUI;
 
@@ -34,6 +35,8 @@ public:
 	int getAngle();
 	void	setSize(int size);				// set the UI size
 	char*	getImageName();					// get the current image name
+
+	KernalBruah* currentKernal;
 
 	
 	void UndoStep();

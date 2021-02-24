@@ -57,6 +57,13 @@ public:
 	Fl_Window* m_DissolveScaleDialog;
 	Fl_Slider* m_DissolveAlphaSlider;
 	Fl_Button* m_DissolveSelectFileButton;
+// Convolution Kernal
+	Fl_Window* m_ConvolutionDialog;
+	Fl_Input* m_ConvolutionWeightsInput;
+	Fl_Button* m_ConvolutionApply;	
+	Fl_Check_Button* m_ConvolutionWeightNormalize;
+
+
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -123,6 +130,8 @@ private:
 	static void cb_swapPaintWithAnother(Fl_Menu_* o, void* v);
 	static void cb_load_Dissolveimage(Fl_Widget* o, void* v);
 
+	static void cb_applyConvolution(Fl_Widget* o, void* v);
+
 
 	static void cb_load_Another_image(Fl_Menu_* o, void* v);
 
@@ -132,6 +141,8 @@ private:
 	static void cb_RGBscaleWidge(Fl_Menu_* o, void* v);
 
 	static void cb_DissolveWidge(Fl_Menu_* o, void* v);
+
+	static void cb_ConvolutionWidge(Fl_Menu_* o, void* v);
 
 	static void cb_RSlides(Fl_Widget* o, void* v);
 

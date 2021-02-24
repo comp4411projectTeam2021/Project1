@@ -12,7 +12,7 @@
 
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
-
+#include "KernalBruah.h"
 /*
 //------------------------------ Widget Examples -------------------------------------------------
 Here is some example code for all of the widgets that you may need to add to the 
@@ -194,6 +194,25 @@ void ImpressionistUI::cb_load_Dissolveimage(Fl_Widget* o, void* v)
 	}
 }
 
+void ImpressionistUI::cb_applyConvolution(Fl_Widget* o, void* v)
+{
+	ImpressionistDoc* pDoc = ((ImpressionistUI*)(o->user_data()))->m_pDoc;
+	
+	const char* weightImput = pDoc->m_pUI->m_ConvolutionWeightsInput->value();
+	char* temp = new char[strlen(weightImput)];
+	memcpy(temp, weightImput, strlen(weightImput));
+
+	KernalBruah* kernalbrush = KernalBruah::GenerateConverlution(pDoc, temp, pDoc->m_pUI->m_ConvolutionWeightNormalize->value());
+	if (kernalbrush == nullptr) {
+		fl_message("Input is not a valid converlution kernal weight");
+	}
+	else {
+		if (pDoc->currentKernal) delete pDoc->currentKernal;
+		pDoc->currentKernal = kernalbrush;
+		pDoc->m_pUI->m_paintView->doConverlution = true;
+	}
+}
+
 void ImpressionistUI::cb_load_Another_image(Fl_Menu_* o, void* v)
 {
 	ImpressionistDoc *pDoc= whoami(o)->getDocument();
@@ -356,6 +375,9 @@ void ImpressionistUI::cb_RGBscaleWidge(Fl_Menu_* o, void* v) {
 void ImpressionistUI::cb_DissolveWidge(Fl_Menu_* o, void* v) {
 	whoami(o)->m_DissolveScaleDialog->show();
 }
+void ImpressionistUI::cb_ConvolutionWidge(Fl_Menu_* o, void* v) {
+	whoami(o)->m_ConvolutionDialog->show();
+}
 
 void ImpressionistUI::cb_alphaSlides(Fl_Widget* o, void* v)
 {
@@ -514,11 +536,14 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
+
 	{ "&ImageControl",		0, 0, 0, FL_SUBMENU },
 		{ "Swap &Paintview with original",	FL_ALT + 'P', (Fl_Callback*)ImpressionistUI::cb_swapPaintWithOriginal },
 		{ "Swap &Original with Another",	FL_ALT + 'O', (Fl_Callback*)ImpressionistUI::cb_swapPaintWithAnother },
 		{ "&Color Scale",	FL_ALT + 'C', (Fl_Callback*)ImpressionistUI::cb_RGBscaleWidge },
 		{ "&Dissolve",	FL_ALT + 'D', (Fl_Callback*)ImpressionistUI::cb_DissolveWidge },
+		{ "&Convolution ",	0, (Fl_Callback*)ImpressionistUI::cb_ConvolutionWidge },
+
 		{ 0 },
 
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
@@ -731,5 +756,16 @@ ImpressionistUI::ImpressionistUI() {
 		m_DissolveSelectFileButton->callback(cb_load_Dissolveimage);
 
 	m_DissolveScaleDialog->end();	
+
+	m_ConvolutionDialog = new Fl_Window(500, 150, "Convolution");
+		m_ConvolutionWeightsInput = new Fl_Input(100, 10, 300, 20, "Weights");
+
+		m_ConvolutionApply = new Fl_Button(100, 30, 50, 20, "Apply");
+		m_ConvolutionApply->user_data((void*)(this));   // record self to be used by static callback functions
+		m_ConvolutionApply->callback(cb_applyConvolution);
+
+		m_ConvolutionWeightNormalize = new Fl_Check_Button(100, 60, 50, 20, "Normalize");
+
+	m_ConvolutionDialog->end();
 
 }
