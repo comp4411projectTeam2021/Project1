@@ -44,7 +44,21 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	else if (ImpBrush::m_DirectionType == GRADIENT)
 	{
-
+		GLubyte* upPoint = pDoc->GetOriginalPixel(source.x, source.y - 1);
+		GLubyte* lowPoint = pDoc->GetOriginalPixel(source.x, source.y + 1);
+		GLubyte* leftPoint = pDoc->GetOriginalPixel(source.x - 1, source.y);
+		GLubyte* rightPoint = pDoc->GetOriginalPixel(source.x + 1, source.y);
+		double upPointGray = upPoint[0] * 0.299 + upPoint[1] * 0.587 + upPoint[2] * 0.114;
+		double lowPointGray = lowPoint[0] * 0.299 + lowPoint[1] * 0.587 + lowPoint[2] * 0.114;
+		double leftPointGray = leftPoint[0] * 0.299 + leftPoint[1] * 0.587 + leftPoint[2] * 0.114;
+		double rightPointGray = rightPoint[0] * 0.299 + rightPoint[1] * 0.587 + rightPoint[2] * 0.114;
+		double Gx = rightPointGray - leftPointGray;
+		double Gy = upPointGray - lowPointGray;
+		double theta = atan2(Gx, Gy);
+		p1X = target.x + size / 2.0 * cos(theta);
+		p1Y = target.y + size / 2.0 * sin(theta);
+		p2X = target.x - size / 2.0 * cos(theta);
+		p2Y = target.y - size / 2.0 * sin(theta);
 	}
 	else if (ImpBrush::m_DirectionType == BRUSH_DIRECTION)
 	{
