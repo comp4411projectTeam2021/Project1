@@ -33,7 +33,11 @@ public:
 	
 	void SaveStep();
 
+	void autoDraw(bool doRandom);
+
 	ImpressionistDoc *m_pDoc;
+
+	bool toAutoDraw;
 
 private:
 	GLvoid* m_pPaintBitstart;

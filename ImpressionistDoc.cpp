@@ -20,6 +20,8 @@
 #include "ScatteredLineBrush.h"
 #include "ScatteredCircleBrush.h"
 
+#include <ctime>
+
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
 ImpressionistDoc::ImpressionistDoc() 
@@ -79,6 +81,8 @@ char* ImpressionistDoc::getImageName()
 {
 	return m_imageName;
 }
+
+
 
 //---------------------------------------------------------
 // Called by the UI when the user changes the brush type.

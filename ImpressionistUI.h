@@ -43,7 +43,10 @@ public:
 
 	Fl_Slider* m_BrushWidthSlider;
 	Fl_Slider* m_BrushAngleSlider;
-	Fl_Button*          m_ClearCanvasButton;
+	Fl_Button* m_ClearCanvasButton;
+	Fl_Button* m_AutoDrawButton;
+	Fl_Check_Button * m_AutoDrawRandomCheck;
+	
 // for color adjust
 	Fl_Window* m_RGBScaleDialog;
 	Fl_Slider* m_ColorRSlider;
@@ -109,6 +112,7 @@ private:
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
 	static void	cb_directionChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
+	static void cb_AutoDraw_button(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
 	static void	cb_widthSlides(Fl_Widget* o, void* v);
 	static void	cb_angleSlides(Fl_Widget* o, void* v);

@@ -301,6 +301,13 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget* o, void* v)
 	pDoc->clearCanvas();
 }
 
+void ImpressionistUI::cb_AutoDraw_button(Fl_Widget* o, void* v)
+{
+	ImpressionistUI* pUI = ((ImpressionistUI*)(o->user_data()));
+
+	pUI->m_paintView->toAutoDraw = true;
+}
+
 /// <summary>
 /// update alpha value of brush
 /// </summary>
@@ -582,7 +589,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_Alpha = 1;
 
 	// brush dialog definition
-	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
+	m_brushDialog = new Fl_Window(600, 525, "Brush Dialog");
 		// Add a brush type choice to the dialog
 		m_BrushTypeChoice = new Fl_Choice(50,10,150,25,"&Brush");
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
@@ -597,6 +604,14 @@ ImpressionistUI::ImpressionistUI() {
 		m_ClearCanvasButton = new Fl_Button(240,10,150,25,"&Clear Canvas");
 		m_ClearCanvasButton->user_data((void*)(this));
 		m_ClearCanvasButton->callback(cb_clear_canvas_button);
+
+		m_AutoDrawButton = new Fl_Button(400,10,150,25,"&Auto Draw");
+		m_AutoDrawButton->user_data((void*)(this));
+		m_AutoDrawButton->callback(cb_AutoDraw_button);
+		
+		m_AutoDrawRandomCheck = new Fl_Check_Button(400,40,150,25,"Random stroks");
+		m_AutoDrawRandomCheck->user_data((void*)(this));
+		
 
 
 		// Add brush size slider to the dialog 

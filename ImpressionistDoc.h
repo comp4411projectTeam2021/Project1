@@ -34,6 +34,7 @@ public:
 	int getAngle();
 	void	setSize(int size);				// set the UI size
 	char*	getImageName();					// get the current image name
+
 	
 	void UndoStep();
 
