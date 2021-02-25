@@ -2,42 +2,46 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 
-KernalBruah::KernalBruah(ImpressionistDoc* pDoc):ImpBrush(pDoc,"Kernal Brush")
+KernalBruah::KernalBruah(ImpressionistDoc* pDoc, char* name)
+	:ImpBrush(pDoc, name)
 {
-
+	size = 0;
+	sum = 0;
 }
 //-1,-1,-1,0,0,0,1,1,1
 void KernalBruah::BrushBegin(const Point source, const Point target)
 {
 	glPointSize(1);
+
 	
-	glBegin(GL_POINTS);
-		int range = size / 2;
-		int kernalPos = 0;
-		float result[3] = { 0,0,0 };//RGB
-		for (int y = -range; y <= range; y++) {
-			for (int x = -range; x <= range; x++) {
-				result[0] += kernal[kernalPos] * GetDocument()->GetFileCopyPixel(source.x+x, source.y+y)[0];
-				result[1] += kernal[kernalPos] * GetDocument()->GetFileCopyPixel(source.x+x, source.y+y)[1];
-				result[2] += kernal[kernalPos] * GetDocument()->GetFileCopyPixel(source.x+x, source.y+y)[2];
-				kernalPos++;
-			}
-		}
-		result[0] /= sum;
-		result[1] /= sum;
-		result[2] /= sum;
-		
-		GLubyte resultByte[3] = { result[0] ,result[1] ,result[2] };
-		
-		glColor4ubv(resultByte);
-
-		glVertex2d(target.x, target.y);
-
-	glEnd();
+	BrushMove(source, target);
 }
 
 void KernalBruah::BrushMove(const Point source, const Point target)
 {
+	glBegin(GL_POINTS);
+	int range = size / 2;
+	int kernalPos = 0;
+	float result[3] = { 0,0,0 };//RGB
+	for (int y = -range; y <= range; y++) {
+		for (int x = -range; x <= range; x++) {
+			result[0] += kernal[kernalPos] * GetDocument()->GetFileCopyPixel(source.x + x, source.y + y)[0];
+			result[1] += kernal[kernalPos] * GetDocument()->GetFileCopyPixel(source.x + x, source.y + y)[1];
+			result[2] += kernal[kernalPos] * GetDocument()->GetFileCopyPixel(source.x + x, source.y + y)[2];
+			kernalPos++;
+		}
+	}
+	result[0] /= sum;
+	result[1] /= sum;
+	result[2] /= sum;
+
+	GLubyte resultByte[3] = { result[0] ,result[1] ,result[2] };
+
+	glColor4ubv(resultByte);
+
+	glVertex2d(target.x, target.y);
+
+	glEnd();
 }
 
 void KernalBruah::BrushEnd(const Point source, const Point target)

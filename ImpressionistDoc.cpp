@@ -19,6 +19,7 @@
 #include "ScatteredPointBrush.h"
 #include "ScatteredLineBrush.h"
 #include "ScatteredCircleBrush.h"
+#include "GaussianBlur.h"
 
 #include <ctime>
 
@@ -61,6 +62,9 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatteredLineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
 		= new ScatteredCircleBrush( this, "Scattered Circles" );
+	ImpBrush::c_pBrushes[BRUSH_GAUSSIAN_BLUR]
+		= new GaussianBlurBrush(this, "Gaussian Blur Brush");
+
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];

@@ -106,10 +106,12 @@ void PaintView::draw()
 
 		}
 		else if (doConverlution) {
+			glPointSize(1);
+
 			for (int x = 0; x < m_nDrawWidth; x++) {
 				for (int y = 0; y < m_nDrawHeight; y++) {
 					const Point target(x, m_nWindowHeight - y);
-					m_pDoc->currentKernal->BrushBegin(target, target);
+					m_pDoc->currentKernal->BrushMove(target, target);
 				}
 				glFlush();
 			}
