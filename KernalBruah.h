@@ -2,7 +2,7 @@
 
 #include "ImpBrush.h"
 #include <string>
-#include <vector>;
+#include <vector>
 
 
 class KernalBruah :public ImpBrush {

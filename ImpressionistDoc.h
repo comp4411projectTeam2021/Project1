@@ -11,6 +11,7 @@
 #include "bitmap.h"
 #include "KernalBruah.h"
 
+
 class ImpressionistUI;
 
 class ImpressionistDoc 
@@ -20,7 +21,9 @@ public:
 
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
 
-	int		loadImage(char *iname);			// called by the UI to load image
+	int		loadImage(char *iname);
+	int reloadForVideo();
+	// called by the UI to load image
 	int 	loadDissolveImage(char* iname);
 	int		loadAnotherImage(char* iname);
 	int swapWithAnother();
@@ -38,6 +41,7 @@ public:
 
 	KernalBruah* currentKernal;
 
+	std::string workingPath;
 	
 	void UndoStep();
 
@@ -78,6 +82,7 @@ public:
 	//int m_LineAngle;
 
 	ImpressionistUI*	m_pUI;
+
 
 // Operations
 public:

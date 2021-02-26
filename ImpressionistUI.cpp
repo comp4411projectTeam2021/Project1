@@ -13,6 +13,9 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include "KernalBruah.h"
+#include <fstream>
+#include <iostream>
+#include "helper.h"
 /*
 //------------------------------ Widget Examples -------------------------------------------------
 Here is some example code for all of the widgets that you may need to add to the 
@@ -222,7 +225,71 @@ void ImpressionistUI::cb_load_Another_image(Fl_Menu_* o, void* v)
 		pDoc->loadAnotherImage(newfile);
 	}
 }
+//helper func
+void getFiles(std::string path, std::vector<std::string>& files)
+{
+	//文件句柄
+	long   hFile = 0;
+	//文件信息
+	struct _finddata_t fileinfo;
 
+	std::string p;
+	if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1)
+	{
+		do
+		{
+			//如果是目录,迭代之
+			//如果不是,加入列表
+			if ((fileinfo.attrib & _A_SUBDIR))
+			{
+				if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+					getFiles(p.assign(path).append("\\").append(fileinfo.name), files);
+			}
+			else
+			{
+				files.push_back(p.assign(path).append("\\").append(fileinfo.name));
+			}
+		} while (_findnext(hFile, &fileinfo) == 0);
+		_findclose(hFile);
+	}
+}
+
+void ImpressionistUI::cb_load_Video(Fl_Menu_* o, void* v)
+{
+	ImpressionistDoc* pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "Video Files(*.{wmv,avi,dat,asf,mpeg,mpg,rm,rmvb,ram,flv,mp4,3gp,mov,divx,dv,vob,mkv,qt,cpk,fli,flc,f4v,m4v,mod,m2t,swf,webm,mts,m2ts})", pDoc->getImageName());
+	if (newfile != NULL) {
+
+		CreateDirectory(".\\temp\\", 0);
+		deleteALL(".\\temp");
+		CreateDirectory(".\\temp\\ori\\", 0);
+		CreateDirectory(".\\temp\\aft\\", 0);
+		
+		std::string filePath = newfile;
+		std::string com = ".\\ffmpeg\\bin\\ffmpeg.exe -i \"" + filePath + "\" -q:v 2 -vsync 2 -f image2 .\\temp\\ori\\core-%02d.bmp";
+		
+		if (!system(com.c_str())) {
+
+			pDoc->m_pUI->m_paintView->files.clear();
+
+			getFiles(".\\temp\\ori", pDoc->m_pUI->m_paintView->files);
+			
+			int realPathLength = (pDoc->workingPath + (pDoc->m_pUI->m_paintView->files[0])).length() + 1;
+			char* temp = new char[realPathLength];
+			temp[realPathLength-1] = '\0';
+			memcpy(temp, (pDoc->workingPath + (pDoc->m_pUI->m_paintView->files[0])).c_str(), realPathLength);
+			pDoc->loadImage(temp);
+			delete[] temp;
+			pDoc->m_pUI->m_paintView->doVideoProcess = true;
+			pDoc->m_pUI->m_paintView->redraw();
+		}
+		else {
+			fl_message("Unsupported format/Fail to open file");
+		}
+
+	}
+}
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -545,6 +612,10 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Convolution ",	0, (Fl_Callback*)ImpressionistUI::cb_ConvolutionWidge },
 
 		{ 0 },
+	{ "&Video",		0, 0, 0, FL_SUBMENU },
+			{ "&Video Auto Draw",	FL_ALT + 'V', (Fl_Callback*)ImpressionistUI::cb_load_Video },
+
+	{0},
 
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
 		{ "&About",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_about },

@@ -12,12 +12,16 @@
 #include <FL/gl.h>
 #include <GL/glu.h>
 #include <stdlib.h>
+#include <string>
+#include <vector>
 
 class ImpressionistDoc;
 
 class PaintView : public Fl_Gl_Window
 {
 public:
+	std::vector<std::string> files;
+
 	static Point getCurrentMOusePos();
 	PaintView(int x, int y, int w, int h, const char* l);
 	void draw();
@@ -34,12 +38,20 @@ public:
 	void SaveStep();
 
 	void autoDraw(bool doRandom);
+	char* outPath = new char[MAX_PATH];
 
 	ImpressionistDoc *m_pDoc;
 
 	bool toAutoDraw;
 
 	bool doConverlution;
+
+	bool doVideoProcess;
+
+	
+	~PaintView() {
+		delete[] outPath;
+	}
 
 
 private:

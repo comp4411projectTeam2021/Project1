@@ -10,7 +10,10 @@
 #include "paintview.h"
 #include "ImpBrush.h"
 #include <iostream>
-#include<algorithm>
+#include <algorithm>
+#include <time.h>
+#include <time.h>
+#include <corecrt_io.h>
 
 
 #define LEFT_MOUSE_DOWN		1
@@ -30,6 +33,7 @@ static int		eventToDo;
 static int		isAnEvent = 0;
 static Point	coord;
 
+
 Point PaintView::getCurrentMOusePos()
 {
 	return coord;
@@ -46,6 +50,7 @@ PaintView::PaintView(int			x,
 	m_nWindowHeight = h;
 	toAutoDraw = false;
 	doConverlution = false;
+	doVideoProcess = false;
 
 }
 
@@ -99,7 +104,34 @@ void PaintView::draw()
 	m_nStartCol = scrollpos.x;
 	m_nEndCol = m_nStartCol + drawWidth;
 	if (m_pDoc->m_ucPainting) {
-		if (toAutoDraw)
+
+		if (doVideoProcess) {
+
+			if (!files.empty()) {
+				int realPathLength = (m_pDoc->workingPath + (m_pDoc->m_pUI->m_paintView->files[0])).length() + 1;
+				realPathLength = (m_pDoc->workingPath + (m_pDoc->m_pUI->m_paintView->files[0])).length() + 1;
+				outPath[realPathLength-1] = '\0';
+				memcpy(outPath, (m_pDoc->workingPath + (m_pDoc->m_pUI->m_paintView->files[0])).c_str(), realPathLength);
+				int w, h;
+				delete[] m_pDoc->m_ucBitmap;
+				m_pDoc->m_ucBitmap = readBMP(outPath, w, h);
+				autoDraw(true);
+				std::string savepath = outPath;
+				savepath.replace(m_pDoc->workingPath.length()+7, 3, "aft");
+				memcpy(outPath, savepath.c_str(), realPathLength);
+				m_pDoc->saveImage(outPath);
+				m_pDoc->clearCanvas();
+				RestoreContent();
+				std::vector<std::string>::iterator k = files.begin();
+				files.erase(k);
+			}
+			else {
+				doVideoProcess = false;
+				SaveCurrentContent();
+				system(".\\ffmpeg\\bin\\ffmpeg.exe -f image2 -i ./temp/aft/core-%02d.bmp .\\result.avi");
+			}
+		}
+		else if (toAutoDraw)
 		{
 			autoDraw(m_pDoc->m_pUI->m_AutoDrawRandomCheck->value());
 			toAutoDraw = false;
@@ -239,6 +271,10 @@ int PaintView::handle(int event)
 
 	}
 
+	if (doVideoProcess) {
+		m_pDoc->m_pUI->m_origView->refresh();
+		redraw();
+	}
 
 
 	return 1;
@@ -350,3 +386,5 @@ void PaintView::autoDraw(bool doRandom)
 	delete[] x_vlaues;
 	delete[] y_vlaues;
 }
+
+

@@ -135,6 +135,8 @@ private:
 
 	static void cb_load_Another_image(Fl_Menu_* o, void* v);
 
+	static void cb_load_Video(Fl_Menu_* o, void* v);
+
 
 	static void cb_undo(Fl_Menu_* o, void* v);
 
