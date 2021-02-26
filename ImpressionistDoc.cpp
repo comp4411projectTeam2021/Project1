@@ -20,6 +20,7 @@
 #include "ScatteredLineBrush.h"
 #include "ScatteredCircleBrush.h"
 #include "GaussianBlur.h"
+#include "StarBrush.h"
 #include <direct.h>
 #include <ctime>
 
@@ -67,6 +68,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatteredCircleBrush( this, "Scattered Circles" );
 	ImpBrush::c_pBrushes[BRUSH_GAUSSIAN_BLUR]
 		= new GaussianBlurBrush(this, "Gaussian Blur Brush");
+	ImpBrush::c_pBrushes[BRUSH_STAR]
+		= new StarBrush(this, "Star Brush");
 
 
 	// make one of the brushes current
