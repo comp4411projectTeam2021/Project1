@@ -12,8 +12,8 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
-#include <time.h>
 #include <corecrt_io.h>
+#include <ctime>
 
 
 #define LEFT_MOUSE_DOWN		1

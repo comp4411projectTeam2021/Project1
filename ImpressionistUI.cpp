@@ -362,7 +362,19 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 	int type=(int)v;
 
 
-	pDoc->setBrushType(type);
+	pDoc->setBrushType(type);/*
+	if (type == BRUSH_LINES || type == BRUSH_SCATTERED_LINES)
+	{
+		m_BrushDirectionChoice->activate();
+		m_BrushWidthSlider->activate();
+		m_BrushAngleSlider->activate();
+	}
+	else
+	{
+		m_BrushDirectionChoice->deactivate();
+		m_BrushWidthSlider->deactivate();
+		m_BrushAngleSlider->deactivate();
+	}*/
 }
 
 void ImpressionistUI::cb_directionChoice(Fl_Widget* o, void* v)
