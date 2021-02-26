@@ -5,7 +5,7 @@ HKUST login(s): jluay, yxuck
 
 Delete yes/no when appropriate
 
-W per new brush						yes/no
+-W per new brush					yes
 -W border clipping					yes
 -W (red) marker						yes
 -W swap							yes
@@ -28,4 +28,4 @@ BW edge clipping					yes/no
 4B impressionist video with temporal coherency		yes (see readme)
 8B Bayesian matting					yes/no
 
-Total: 14.5
+Total: 15
